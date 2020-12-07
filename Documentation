@@ -1,0 +1,22 @@
+Project 4 Testing
+Network-Spell Checker
+
+Design: 
+1.	main.h - contains default parameter function definition and headers such as DEFAULT_PORT - indicating the port number of host, NUM_CLIENTS - indicating the maximum number of clients, NUM_WORKERS - indicating the number of workers, DEFAULT_LOG_FILE - indicating the log file for the server and DEFAULT_DICTIONARY - for the words contained in the for the spell check.
+2.	utility.c - a file that is useful for implementing functions ClientQueue and LogQueue. This is being used for storing the client socket file descriptors and the log events respectively. 
+It also contains 2 spell-checking functions - binary and linear search functions that help in determining the correctness of the requests. 
+3.	server.c - 
+•	the main function - 
+  o	initializes the condition variables and mutexes
+  o	Initializes the queues for the client and log. Note: the thread is unsafe. 
+  o	Read the word and provide it to all the worker threads.
+  o	Tries to establish socket connection.
+  o	Makes worker threads and a logger thread, which will be used to write a log file every time a request has been made.
+  o	The loop will accept the connections that keep on coming and add them to the client queue until the capacity has been reached and then the main thread will basically distribute the process for each client to a worker thread. This displays that the main thread is the producer, and the worker threads are the clients. 
+•	enqueue_client: once the connection has been established, a notification is sent via the pthread_cond_signal() threads which have pthread_cond_wait() and the process continues. 
+•	dequeue_client: Returns a client socket file descriptor. It follows the FIFO manner.
+•	logger_thread (): Basically writes to a log file and the events ae added to log_queue. 
+•	worker_thread (): Works on a client request by removing from a client and handling it through the handle_request_response() function which provides to the client and writes to the logger queue. This goes on until all the clients are handled, it closes the socket file with the client. 
+•	Allocate_thread_arguments: Creates a simple struct to provide arguments to the worker and logger threads. 
+Testing Plans: 
+For testing I faced some issues with connection to the server and I was not able to concretely result my testings.
